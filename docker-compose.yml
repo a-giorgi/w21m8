@@ -3,7 +3,7 @@ version: "2"
 services:
   app:
     container_name: "app"
-    image: kgiorgi/w21m8"
+    image: "kgiorgi/w21m8"
     environment:
       - WILDFLY_USER=admin
       - WILDFLY_PASS=adminPassword
