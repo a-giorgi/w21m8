@@ -31,15 +31,16 @@ RUN echo "=> Starting WildFly server" && \
       $JBOSS_CLI --connect --command="module add --name=com.mysql --resources=/tmp/mysql-connector-java-${MYSQL_VERSION}.jar --dependencies=javax.api,javax.transaction.api" && \
     echo "=> Adding MySQL driver" && \
       $JBOSS_CLI --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)" && \
-    echo "=> Adding main Datasource" && \
+    echo "=> Creating a new datasource" && \
       $JBOSS_CLI --connect --command="data-source add \
         --name=${DB_NAME}DS \
-        --jndi-name=java:/myFirstJavaEeDs \
+        --jndi-name=java:/jdbc/datasources/${DB_NAME}DS \
         --user-name=${DB_USER} \
         --password=${DB_PASS} \
         --driver-name=mysql \
-        --connection-url=jdbc:mysql://${DB_URI}/java-ee-schema?serverTimezone=UTC \
+        --connection-url=jdbc:mysql://${DB_URI}/${DB_NAME}?serverTimezone=UTC \
         --use-ccm=false \
+        --max-pool-size=25 \
         --blocking-timeout-wait-millis=5000 \
         --enabled=true" && \
     echo "=> Shutting down WildFly and Cleaning up" && \
