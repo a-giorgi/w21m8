@@ -29,17 +29,17 @@ RUN echo "=> Starting WildFly server" && \
       curl --location --output /tmp/mysql-connector-java-${MYSQL_VERSION}.jar --url http://search.maven.org/remotecontent?filepath=mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar && \
     echo "=> Adding MySQL module" && \
       $JBOSS_CLI --connect --command="module add --name=com.mysql --resources=/tmp/mysql-connector-java-${MYSQL_VERSION}.jar --dependencies=javax.api,javax.transaction.api" && \
-  echo "=> Adding MySQL driver" && \
-    echo "=> Creating a new datasource" && \
+    echo "=> Adding MySQL driver" && \
+      $JBOSS_CLI --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)" && \
+    echo "=> Adding main Datasource" && \
       $JBOSS_CLI --connect --command="data-source add \
         --name=${DB_NAME}DS \
-        --jndi-name=java:/jdbc/datasources/${DB_NAME}DS \
+        --jndi-name=java:/myFirstJavaEeDs \
         --user-name=${DB_USER} \
         --password=${DB_PASS} \
         --driver-name=mysql \
-        --connection-url=jdbc:mysql://${DB_URI}/${DB_NAME} \
+        --connection-url=jdbc:mysql://${DB_URI}/java-ee-schema?serverTimezone=UTC \
         --use-ccm=false \
-        --max-pool-size=25 \
         --blocking-timeout-wait-millis=5000 \
         --enabled=true" && \
     echo "=> Shutting down WildFly and Cleaning up" && \
